@@ -29,6 +29,8 @@ services:
     #  - 33400:33400
     environment:
       - TZ=America/La_Paz
+      - PUID=1000
+      - PGID=1000
     volumes:
       - ${MEDIA}:/media
       - ${STORAGE}/tmp:/tmp
