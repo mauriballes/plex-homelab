@@ -5,20 +5,21 @@ services:
   samba:
     image: dperson/samba # no hay tag con versiones, solo latest
     restart: always
-    command: '-u "pi;password" -s "media;/media;yes;no" -s "downloads;/downloads;yes;no"'
+    command: '-u "homelab;password" -s "media;/media;yes;no" -s "documents;/documents;yes;no" -s "downloads;/downloads;yes;no"'
     stdin_open: true
     tty: true
     environment:
-      - TZ=America/Argentina/Mendoza
+      - TZ=America/La_Paz
     ports:
       - 139:139
       - 445:445
     volumes:
       - ${MEDIA}:/media
       - ${STORAGE}/torrents:/downloads
+      - ${STORAGE}/documents:/documents
 
   plex:
-    image: jaymoulin/plex:1.30.1.6562
+    image: jaymoulin/plex:1.41.3.9314
     expose:
       - 32400
       - 33400
@@ -27,16 +28,15 @@ services:
     #  - 32400:32400
     #  - 33400:33400
     environment:
-      - TZ=America/Argentina/Mendoza
+      - TZ=America/La_Paz
     volumes:
-      - ${STORAGE}/Plex Media Server:/root/Library/Application Support/Plex Media Server
       - ${MEDIA}:/media
       - ${STORAGE}/tmp:/tmp
     restart: unless-stopped
     network_mode: "host" # Solo funciona en Linux
 
   transmission:
-    image : jaymoulin/transmission:3.00-1.6.1
+    image: jaymoulin/transmission:4.0.6
     command: transmission-daemon -f -g /config
     volumes:
       - ./transmission:/config
@@ -50,7 +50,7 @@ services:
     restart: unless-stopped
 
   flexget:
-    image: wiserain/flexget:3.5
+    image: wiserain/flexget:3.13
     volumes:
       - ./flexget:/config
       - ./flexget/custom-cont-init.d:/custom-cont-init.d
@@ -62,5 +62,5 @@ services:
       - PUID=1001
       - PGID=1001
       - TORRENT_PLUGIN=transmission
-      - FG_WEBUI_PASSWD=p3l4d0_N3RD # la puedes cambiar por la que quieras
+      - FG_WEBUI_PASSWD=p@ssW0rd1 # la puedes cambiar por la que quieras
     restart: unless-stopped
